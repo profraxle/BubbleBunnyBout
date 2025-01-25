@@ -4,6 +4,32 @@
 #include "EnhancedInputComponent.h"
 #include "MyGameJimstance.h"
 
+TSharedPtr<const FUniqueNetId> GetControllerUniqueNetId(APlayerController* InPlayerController)
+{
+	if (!IsValid(InPlayerController))
+	{
+		return nullptr;
+	}
+
+	if (InPlayerController->IsLocalPlayerController())
+	{
+		ULocalPlayer* LocalPlayer = InPlayerController->GetLocalPlayer();
+		if (IsValid(LocalPlayer))
+		{
+			return LocalPlayer->GetPreferredUniqueNetId().GetUniqueNetId();
+		}
+	}
+
+	UNetConnection* RemoteNetConnection = Cast<UNetConnection>(InPlayerController->Player);
+	if (IsValid(RemoteNetConnection))
+	{
+		return RemoteNetConnection->PlayerId.GetUniqueNetId();
+	}
+
+	UE_LOG(LogTemp, Error, TEXT("Player controller does not have a valid remote network connection"));
+	return nullptr;
+}
+
 // Sets default values
 APlayerClass::APlayerClass()
 {
@@ -25,14 +51,6 @@ APlayerClass::APlayerClass()
 	moveSpeed = 1;
 	moveRotateRadius = FVector(200.f, 0.f, 0.f);
 
-	TArray<AActor*> players;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerClass::StaticClass(), players);
-	if (players.Num() == 1) playerID = 0;
-	else playerID = 1;
-
-	if (playerID == 1) {
-		movementAngle = 180;
-	}
 }
 
 // Called when the game starts or when spawned
@@ -47,7 +65,29 @@ void APlayerClass::BeginPlay()
 		{
 			Subsystem->AddMappingContext(inputMappingContext, 0);
 		}
+		ULocalPlayer* LP = Cast<ULocalPlayer>(PlayerController->Player);
+
+		playerID = LP->GetControllerId();
+
+
+		if (playerID == 1) {
+			movementAngle = 180;
+		}
+
+		//the new location to move to, dont move on Z axis, just horizontally
+		FVector newLocation = FVector(boutCentreLocation.X, boutCentreLocation.Y, GetActorLocation().Z);
+
+		//rotate around the radius 
+		FVector rotateValue = moveRotateRadius.RotateAngleAxis(movementAngle, FVector(0.f, 0.f, 1));
+
+		//update new location
+		newLocation.X += rotateValue.X;
+		newLocation.Y += rotateValue.Y;
+
+		//set new actor location
+		SetActorLocation(newLocation);
 	}
+
 
 	//Get the centre of the bout
 	boutCentre = UGameplayStatics::GetActorOfClass(GetWorld(), ABoutCentre::StaticClass());
@@ -123,13 +163,25 @@ void APlayerClass::Move(const FInputActionValue& Value)
 	}
 	
 	//BOMBOCLAT CIRCLE
-	if (movementAngle > 360.f)
-	{
-		movementAngle = 1.f;
+	if (playerID == 1) {
+		if (movementAngle > 270 - moveAngleConstraint)
+		{
+			movementAngle = 270 - moveAngleConstraint;
+		}
+		else if (movementAngle < 90 + moveAngleConstraint)
+		{
+			movementAngle = 90 + moveAngleConstraint;
+		}
 	}
-	else if (movementAngle <= 0.f)
-	{
-		movementAngle = 360.f;
+	else {
+		if (movementAngle > 90 - moveAngleConstraint)
+		{
+			movementAngle = 90 - moveAngleConstraint;
+		}
+		else if (movementAngle < -90 + moveAngleConstraint)
+		{
+			movementAngle = -90 + moveAngleConstraint;
+		}
 	}
 
 	//rotate around the radius 
@@ -187,6 +239,4 @@ void APlayerClass::Die()
 	UE_LOG(LogTemp, Warning, TEXT("DEATH"));
 	dying = true;
 }
-
-
 
