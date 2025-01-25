@@ -2,6 +2,7 @@
 
 #include "PlayerClass.h"
 #include "EnhancedInputComponent.h"
+#include "MyGameJimstance.h"
 
 // Sets default values
 APlayerClass::APlayerClass()
@@ -23,6 +24,11 @@ APlayerClass::APlayerClass()
 	movementAngle = 0;
 	moveSpeed = 1;
 	moveRotateRadius = FVector(200.f, 0.f, 0.f);
+
+	TArray<AActor*> players;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerClass::StaticClass(), players);
+	if (players.Num() == 1) playerID = 0;
+	else playerID = 1;
 }
 
 // Called when the game starts or when spawned
@@ -85,6 +91,15 @@ void APlayerClass::Tick(float DeltaTime)
 	rightArmExtensionDistance = 0.f;
 
 	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), FVector(boutCentreLocation.X, boutCentreLocation.Y, GetActorLocation().Z)));
+
+	// Death
+	if (dying) {
+		deathTimeElapsed += DeltaTime;
+		if (deathTimeElapsed >= 0.5f) {
+			dying = false;
+			Cast<UMyGameJimstance>(GetGameInstance())->AwardPoint(1 - playerID);
+		}
+	}
 }
 
 //Move left and right around a point
@@ -161,6 +176,12 @@ void APlayerClass::RaiseLeftArm(const FInputActionValue& Value)
 void APlayerClass::RaiseRightArm(const FInputActionValue& Value)
 {
 	rightArmExtensionDistance = Value.Get<float>() * rightArmMaxExtensionDistance;
+}
+
+void APlayerClass::Die()
+{
+	UE_LOG(LogTemp, Warning, TEXT("DEATH"));
+	dying = true;
 }
 
 

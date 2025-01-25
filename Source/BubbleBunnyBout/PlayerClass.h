@@ -39,6 +39,10 @@ public:
 	void RaiseLeftArm(const FInputActionValue& Value);
 	void RaiseRightArm(const FInputActionValue& Value);
 
+	UFUNCTION(BlueprintCallable)
+	void Die();
+
+
 	//Movement Functions
 	void Move(const FInputActionValue& Value);
 
@@ -105,4 +109,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UInputAction* rightArmRaiseIA;
 
+
+	// Death
+	int playerID;
+	bool dying = false;
+	float deathTimeElapsed = 0.f;
 };
