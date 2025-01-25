@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "EnhancedInputSubsystems.h"
+#include "BoutCentre.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "PlayerClass.generated.h"
 
 UCLASS()
@@ -37,13 +40,16 @@ public:
 	//----------Movement Variables ----------
 	//the current angle that the player is at, 0 to 360, changing default value alters the starting position
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float angle;		
+	float movementAngle;		
 	//speed at which the player rotates around the point
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float moveSpeed;	
 	//distance from the point that the players rotate around
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector rotateRadius;		
+	FVector moveRotateRadius;		
+	//actor at the centre of the bout
+	AActor* boutCentre;
+	FVector boutCentreLocation;
 
 	// Components
 	USceneComponent* leftArm;

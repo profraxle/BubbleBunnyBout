@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "EnhancedInputSubsystems.h"
+#include "BoutCentre.h"
 #include "PlayerClass.generated.h"
 
 UCLASS()
@@ -33,8 +34,20 @@ public:
 
 	//Movement Functions
 	void Move(const FInputActionValue& Value);
-	float angle;
-	float moveSpeed;
+
+	//----------Movement Variables ----------
+	//the current angle that the player is at, 0 to 360, changing default value alters the starting position
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float movementAngle;		
+	//speed at which the player rotates around the point
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float moveSpeed;	
+	//distance from the point that the players rotate around
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector moveRotateRadius;		
+	//actor at the centre of the bout
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	AActor* boutCentre;
 
 	// Components
 	USceneComponent* leftArm;
