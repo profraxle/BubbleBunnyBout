@@ -15,6 +15,8 @@ APlayerClass::APlayerClass()
 	//Init movement vars
 	angle = 0;
 	moveSpeed = 1;
+	rotateRadius = FVector(200.f, 0.f, 0.f);
+
 }
 
 // Called when the game starts or when spawned
@@ -35,37 +37,71 @@ void APlayerClass::BeginPlay()
 // Called every frame
 void APlayerClass::Tick(float DeltaTime)
 {
+	/*
+	//the new location to move to
+	FVector newLocation = FVector(0.f, 0.f, 0.f);
+
+	//move the current angle based on movespeed
+	angle += moveSpeed;
+
+	//BOMBOCLAT CIRCLE
+	if (angle > 360.f)
+	{
+		angle = 1.f;
+	}
+	else if (angle <= 0.f)
+	{
+		angle = 360.f;
+	}
+
+	//rotate around the radius 
+	FVector rotateValue = rotateRadius.RotateAngleAxis(angle, FVector(0.f, 0.f, 1));
+
+	//update new location
+	newLocation.X += rotateValue.X;
+	newLocation.Y += rotateValue.Y;
+	newLocation.Z += rotateValue.Z;
+
+	//set new actor location
+	SetActorLocation(newLocation);
+
+	*/
 	Super::Tick(DeltaTime);
 }
 
 //Move left and right around a point
 void APlayerClass::Move(const FInputActionValue& Value)
 {
-	//the new location to move to
-	FVector newLocation = FVector(0.f,0.f,0.f);
+	//the new location to move to, dont move on Z axis, jsut horizontally
+	FVector newLocation = FVector(0.f, 0.f, GetActorLocation().Z);
 
-	//the radius to move around, temporary for now, will be an actor they move around
-	FVector radius = FVector(200.f,0.f,0.f);
+	FVector2D inputVector = Value.Get<FVector2D>();
 
-	//move the current angle based on movespeed
-	angle+=moveSpeed;
-
+	//move the current angle based on movespeed, left and right
+	if(inputVector.X > 0.f)
+	{
+		angle += moveSpeed;
+	}
+	else if (inputVector.X < 0.f) {
+		angle -= moveSpeed;
+	}
+	
 	//BOMBOCLAT CIRCLE
 	if (angle > 360.f)
 	{
 		angle = 1.f;
-	}else if (angle <= 0.f)
+	}
+	else if (angle <= 0.f)
 	{
 		angle = 360.f;
 	}
 
 	//rotate around the radius 
-	FVector rotateValue = radius.RotateAngleAxis(angle,FVector(0.f,0.f,moveSpeed));
+	FVector rotateValue = rotateRadius.RotateAngleAxis(angle, FVector(0.f, 0.f, 1));
 
 	//update new location
 	newLocation.X += rotateValue.X;
 	newLocation.Y += rotateValue.Y;
-	newLocation.Z += rotateValue.Z;
 
 	//set new actor location
 	SetActorLocation(newLocation);
@@ -80,7 +116,7 @@ void APlayerClass::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	{
 		EnhancedInputComponenet->BindAction(rightArmRotateIA, ETriggerEvent::Triggered, this, &APlayerClass::RotateRightArm);
 		EnhancedInputComponenet->BindAction(leftArmRotateIA, ETriggerEvent::Triggered, this, &APlayerClass::RotateLeftArm);
-		EnhancedInputComponenet->BindAction(leftArmRotateIA, ETriggerEvent::Triggered, this, &APlayerClass::Move);
+		EnhancedInputComponenet->BindAction(movementIA, ETriggerEvent::Triggered, this, &APlayerClass::Move);
 	}
 }
 

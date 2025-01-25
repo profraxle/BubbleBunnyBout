@@ -33,8 +33,17 @@ public:
 
 	//Movement Functions
 	void Move(const FInputActionValue& Value);
-	float angle;
-	float moveSpeed;
+
+	//----------Movement Variables ----------
+	//the current angle that the player is at, 0 to 360, changing default value alters the starting position
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float angle;		
+	//speed at which the player rotates around the point
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float moveSpeed;	
+	//distance from the point that the players rotate around
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector rotateRadius;		
 
 	// Components
 	USceneComponent* leftArm;
