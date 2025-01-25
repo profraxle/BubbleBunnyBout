@@ -1,13 +1,16 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "5.4",
+	"EngineAssociation": "{32F68FC1-47BE-4370-3AE6-16855C123769}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
 		{
 			"Name": "BubbleBunnyBout",
 			"Type": "Runtime",
-			"LoadingPhase": "Default"
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
 		}
 	],
 	"Plugins": [
