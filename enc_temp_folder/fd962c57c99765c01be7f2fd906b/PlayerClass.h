@@ -31,11 +31,6 @@ public:
 	void RotateLeftArm(const FInputActionValue& Value);
 	void RotateRightArm(const FInputActionValue& Value);
 
-	//Movement Functions
-	void Move(const FInputActionValue& Value);
-	float angle;
-	float moveSpeed;
-
 	// Components
 	USceneComponent* leftArm;
 	USceneComponent* rightArm;
@@ -48,6 +43,4 @@ public:
 	UInputAction* leftArmRotateIA;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UInputAction* rightArmRotateIA;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UInputAction* movementIA;
 };
