@@ -26,11 +26,14 @@ void ALocalMultiplayerManager::BeginPlay()
 		GetGameInstance()->CreateLocalPlayer(-1, Error, true);
 	}
 	
+	//store all local players
 	localPlayers = GetGameInstance()->GetLocalPlayers();
 
+	//set the menu mapping context as the active mapping context
 	for (ULocalPlayer* localPlayer : localPlayers) {
 
 		if (UEnhancedInputLocalPlayerSubsystem * subsystem = ULocalPlayer::GetSubsystem <UEnhancedInputLocalPlayerSubsystem>(localPlayer)) {
+			subsystem->ClearAllMappings();
 			subsystem->AddMappingContext(menuMappingContext,0);
 		}
 
@@ -44,16 +47,19 @@ void ALocalMultiplayerManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//if both players are ready count down until game begins
 	if (readyCheck[0] && readyCheck[1])
 	{
 		countdownTimer -= DeltaTime;
 	}
 	else {
+		//set countdown to the countdown amount
 		countdownTimer = COUNTDOWN_AMOUNT;
 	}
 
 	if (countdownTimer <= 0)
 	{
+		//load the gameplay level when timer is over
 		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), gameLevel);
 	
 	}
