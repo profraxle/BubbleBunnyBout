@@ -11,18 +11,18 @@ APlayerClass::APlayerClass()
 
 	leftArm = CreateDefaultSubobject<USceneComponent>("LeftArm");
 	rightArm = CreateDefaultSubobject<USceneComponent>("RightArm");
-
-	//Init movement vars
-	movementAngle = 0;
-	moveSpeed = 1;
-	moveRotateRadius = FVector(200.f, 0.f, 0.f);
-
 	leftArmMarker = CreateDefaultSubobject<UStaticMeshComponent>("LeftArmMarker");
 	rightArmMarker = CreateDefaultSubobject<UStaticMeshComponent>("RightArmMarker");
 	leftArm->SetupAttachment(RootComponent);
 	rightArm->SetupAttachment(RootComponent);
 	leftArmMarker->SetupAttachment(RootComponent);
 	rightArmMarker->SetupAttachment(RootComponent);
+
+
+	//Init movement vars
+	movementAngle = 0;
+	moveSpeed = 1;
+	moveRotateRadius = FVector(200.f, 0.f, 0.f);
 }
 
 // Called when the game starts or when spawned
@@ -41,7 +41,10 @@ void APlayerClass::BeginPlay()
 
 	//Get the centre of the bout
 	boutCentre = UGameplayStatics::GetActorOfClass(GetWorld(), ABoutCentre::StaticClass());
-	boutCentreLocation = boutCentre->GetActorLocation();
+	if (IsValid(boutCentre)) boutCentreLocation = boutCentre->GetActorLocation();
+	else boutCentreLocation = FVector(0, 0, 0);
+
+
 	leftAxisVector = FVector2D(0, 0);
 	rightAxisVector = FVector2D(0, 0);
 }
@@ -51,9 +54,37 @@ void APlayerClass::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//FRotator LookAtRotation = (GetActorLocation() - boutCentreLocation);
+	// Handle left arm
+	FVector leftDirectionPoint = leftArm->GetComponentLocation() + GetActorForwardVector() * leftArmDistance;
+	leftDirectionPoint += GetActorRightVector() * leftAxisVector.X * leftArmRadius;
+	leftDirectionPoint += GetActorUpVector() * leftAxisVector.Y * leftArmRadius;
 
-	//SetActorRotation();
+	FVector leftDirectionVector = leftDirectionPoint - leftArm->GetComponentLocation();
+	leftDirectionVector.Normalize();
+	leftDirectionPoint += leftDirectionVector * leftArmExtensionDistance;
+
+	leftArmMarker->SetWorldLocation(leftDirectionPoint);
+	leftArm->SetWorldRotation(leftDirectionVector.ToOrientationQuat());
+
+	leftAxisVector = FVector2D(0, 0);
+	leftArmExtensionDistance = 0.f;
+
+	// Handle right arm
+	FVector rightDirectionPoint = rightArm->GetComponentLocation() + GetActorForwardVector() * rightArmDistance;
+	rightDirectionPoint += GetActorRightVector() * rightAxisVector.X * rightArmRadius;
+	rightDirectionPoint += GetActorUpVector() * rightAxisVector.Y * rightArmRadius;
+
+	FVector rightDirectionVector = rightDirectionPoint - rightArm->GetComponentLocation();
+	rightDirectionVector.Normalize();
+	rightDirectionPoint += rightDirectionVector * rightArmExtensionDistance;
+
+	rightArmMarker->SetWorldLocation(rightDirectionPoint);
+	rightArm->SetWorldRotation(rightDirectionVector.ToOrientationQuat());
+
+	rightAxisVector = FVector2D(0, 0);
+	rightArmExtensionDistance = 0.f;
+
+	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), FVector(boutCentreLocation.X, boutCentreLocation.Y, GetActorLocation().Z)));
 }
 
 //Move left and right around a point
@@ -91,35 +122,7 @@ void APlayerClass::Move(const FInputActionValue& Value)
 
 	//set new actor location
 	SetActorLocation(newLocation);
-	// Handle left arm
-	FVector leftDirectionPoint = leftArm->GetComponentLocation() + GetActorForwardVector() * leftArmDistance;
-	leftDirectionPoint += GetActorRightVector() * leftAxisVector.X * leftArmRadius;
-	leftDirectionPoint += GetActorUpVector() * leftAxisVector.Y * leftArmRadius;
-
-	FVector leftDirectionVector = leftDirectionPoint - leftArm->GetComponentLocation();
-	leftDirectionVector.Normalize();
-	leftDirectionPoint += leftDirectionVector * leftArmExtensionDistance;
-
-	leftArmMarker->SetWorldLocation(leftDirectionPoint);
-	leftArm->SetWorldRotation(leftDirectionVector.ToOrientationQuat());
-
-	leftAxisVector = FVector2D(0, 0);
-	leftArmExtensionDistance = 0.f;
-
-	// Handle right arm
-	FVector rightDirectionPoint = rightArm->GetComponentLocation() + GetActorForwardVector() * rightArmDistance;
-	rightDirectionPoint += GetActorRightVector() * rightAxisVector.X * rightArmRadius;
-	rightDirectionPoint += GetActorUpVector() * rightAxisVector.Y * rightArmRadius;
-
-	FVector rightDirectionVector = rightDirectionPoint - rightArm->GetComponentLocation();
-	rightDirectionVector.Normalize();
-	rightDirectionPoint += rightDirectionVector * rightArmExtensionDistance;
-
-	rightArmMarker->SetWorldLocation(rightDirectionPoint);
-	rightArm->SetWorldRotation(rightDirectionVector.ToOrientationQuat());
-
-	rightAxisVector = FVector2D(0, 0);
-	rightArmExtensionDistance = 0.f;
+	
 }
 
 // Called to bind functionality to input

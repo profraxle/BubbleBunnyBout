@@ -99,6 +99,8 @@ public:
 	UInputAction* rightArmRotateIA;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UInputAction* movementIA;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UInputAction* leftArmRaiseIA;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UInputAction* rightArmRaiseIA;
