@@ -23,6 +23,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	FVector2D leftAxisVector;
+	FVector2D rightAxisVector;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -33,6 +36,8 @@ public:
 	// Combat functions
 	void RotateLeftArm(const FInputActionValue& Value);
 	void RotateRightArm(const FInputActionValue& Value);
+	void RaiseLeftArm(const FInputActionValue& Value);
+	void RaiseRightArm(const FInputActionValue& Value);
 
 	//Movement Functions
 	void Move(const FInputActionValue& Value);
@@ -52,8 +57,37 @@ public:
 	FVector boutCentreLocation;
 
 	// Components
+	// Arms
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USceneComponent* leftArm;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USceneComponent* rightArm;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* leftArmMarker;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UStaticMeshComponent* rightArmMarker;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float leftArmDistance = 250.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float leftArmRadius = 100.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float leftArmMaxExtensionDistance = 100.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float rightArmMaxExtensionDistance = 100.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float leftArmExtensionDistance = 0.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float rightArmExtensionDistance = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float rightArmDistance = 250.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float rightArmRadius = 100.f;
+
 
 	// Input
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -65,4 +99,8 @@ public:
 	UInputAction* rightArmRotateIA;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UInputAction* movementIA;
+	UInputAction* leftArmRaiseIA;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UInputAction* rightArmRaiseIA;
+
 };
