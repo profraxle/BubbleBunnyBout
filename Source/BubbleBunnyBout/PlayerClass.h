@@ -8,6 +8,7 @@
 #include "BoutCentre.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Engine/LocalPlayer.h"
 #include "PlayerClass.generated.h"
 
 UCLASS()
@@ -38,6 +39,10 @@ public:
 	void RotateRightArm(const FInputActionValue& Value);
 	void RaiseLeftArm(const FInputActionValue& Value);
 	void RaiseRightArm(const FInputActionValue& Value);
+
+	UFUNCTION(BlueprintCallable)
+	void Die();
+
 
 	//Movement Functions
 	void Move(const FInputActionValue& Value);
@@ -105,4 +110,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UInputAction* rightArmRaiseIA;
 
+	// Movement Constraint
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float moveAngleConstraint = 40;
+
+	// Death
+	int playerID;
+	bool dying = false;
+	float deathTimeElapsed = 0.f;
 };
