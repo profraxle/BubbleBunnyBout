@@ -85,6 +85,25 @@ void APlayerClass::Tick(float DeltaTime)
 	rightArmExtensionDistance = 0.f;
 
 	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), FVector(boutCentreLocation.X, boutCentreLocation.Y, GetActorLocation().Z)));
+
+	// Death
+	if (dying) {
+		deathTimeElapsed += DeltaTime;
+		if (deathTimeElapsed >= 1.f) {
+			deathTimeElapsed = 0.f;
+			dying = false;
+			Cast<UMyGameJimstance>(GetGameInstance())->AwardPoint(1 - playerID);
+			GetMesh()->SetVisibility(true);
+			GetMesh()->SetRelativeScale3D(FVector(2.75f));
+			return;
+		}
+		else if (deathTimeElapsed >= 0.15f) {
+			GetMesh()->SetVisibility(false);
+			return;
+		}
+		float scaleOffset = 2.75f + (deathTimeElapsed * 5.f);
+		GetMesh()->SetRelativeScale3D(FVector(scaleOffset, scaleOffset, 2.75f));
+	}
 }
 
 //Move left and right around a point
