@@ -43,7 +43,7 @@ void APlayerClass::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	FRotator LookAtRotation = (GetActorLocation() - boutCentreLocation);
+	//FRotator LookAtRotation = (GetActorLocation() - boutCentreLocation);
 
 	//SetActorRotation();
 }
