@@ -105,4 +105,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UInputAction* rightArmRaiseIA;
 
+
+	// Movement Constraint
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float moveAngleConstraint = 40;
+
+	// Death
+	int playerID;
 };
