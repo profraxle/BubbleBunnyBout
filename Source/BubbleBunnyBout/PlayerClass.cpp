@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "PlayerClass.h"
+#include "EnhancedInputComponent.h"
 
 // Sets default values
 APlayerClass::APlayerClass()
@@ -18,6 +18,14 @@ void APlayerClass::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	//Setup input mapping context
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		{
+			Subsystem->AddMappingContext(inputMappingContext, 0);
+		}
+	}
 }
 
 // Called every frame
@@ -32,5 +40,10 @@ void APlayerClass::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	if (UEnhancedInputComponent* EnhancedInputComponenet = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
+	{
+		EnhancedInputComponenet->BindAction(leftArmRotateIA, ETriggerEvent::Triggered, this, &AMyPlayer::Move);
+		EnhancedInputComponenet->BindAction(rightArmRotateIA, ETriggerEvent::Triggered, this, &AMyPlayer::Look);
+	}
 }
 

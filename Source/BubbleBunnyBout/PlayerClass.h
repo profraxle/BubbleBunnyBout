@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "EnhancedInputSubsystems.h"
 #include "PlayerClass.generated.h"
 
 UCLASS()
@@ -26,10 +27,16 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY()
+	// Components
 	USceneComponent* leftArm;
-	UPROPERTY()
 	USceneComponent* rightArm;
 
+	// Input
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UInputMappingContext* inputMappingContext;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UInputAction* leftArmRotateIA;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UInputAction* rightArmRotateIA;
 };
