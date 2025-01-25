@@ -42,8 +42,18 @@ void APlayerClass::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	if (UEnhancedInputComponent* EnhancedInputComponenet = CastChecked<UEnhancedInputComponent>(PlayerInputComponent))
 	{
-		EnhancedInputComponenet->BindAction(leftArmRotateIA, ETriggerEvent::Triggered, this, &AMyPlayer::Move);
-		EnhancedInputComponenet->BindAction(rightArmRotateIA, ETriggerEvent::Triggered, this, &AMyPlayer::Look);
+		EnhancedInputComponenet->BindAction(rightArmRotateIA, ETriggerEvent::Triggered, this, &APlayerClass::RotateRightArm);
+		EnhancedInputComponenet->BindAction(leftArmRotateIA, ETriggerEvent::Triggered, this, &APlayerClass::RotateLeftArm);
 	}
+}
+
+void APlayerClass::RotateLeftArm(const FInputActionValue& Value)
+{
+	FVector2D rotVector = Value.Get<FVector2D>();
+	leftArm->AddLocalRotation(FRotator(rotVector.X, rotVector.Y, 0));
+}
+
+void APlayerClass::RotateRightArm(const FInputActionValue& Value)
+{
 }
 

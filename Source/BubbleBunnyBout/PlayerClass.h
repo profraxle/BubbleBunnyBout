@@ -27,6 +27,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// Combat functions
+	void RotateLeftArm(const FInputActionValue& Value);
+	void RotateRightArm(const FInputActionValue& Value);
+
 	// Components
 	USceneComponent* leftArm;
 	USceneComponent* rightArm;
