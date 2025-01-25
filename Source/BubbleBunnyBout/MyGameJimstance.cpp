@@ -35,4 +35,9 @@ void UMyGameJimstance::CheckForWin() {
 		GEngine->AddOnScreenDebugMessage(1, 1, FColor::Red, TEXT("Player 1 Wins"));
 		ResetGame();
 	}
+	else {
+		if (UFunction* resetLevelFunction = FindFunction(TEXT("ResetLevel"))) {
+			ProcessEvent(resetLevelFunction, nullptr);
+		}
+	}
 }
