@@ -6,8 +6,6 @@
 #include "GameFramework/Character.h"
 #include "EnhancedInputSubsystems.h"
 #include "BoutCentre.h"
-#include "Kismet/KismetMathLibrary.h"
-#include "Kismet/GameplayStatics.h"
 #include "PlayerClass.generated.h"
 
 UCLASS()
@@ -48,8 +46,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector moveRotateRadius;		
 	//actor at the centre of the bout
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AActor* boutCentre;
-	FVector boutCentreLocation;
 
 	// Components
 	USceneComponent* leftArm;

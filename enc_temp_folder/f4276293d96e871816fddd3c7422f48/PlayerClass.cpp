@@ -32,30 +32,53 @@ void APlayerClass::BeginPlay()
 			Subsystem->AddMappingContext(inputMappingContext, 0);
 		}
 	}
-
-	//Get the centre of the bout
-	boutCentre = UGameplayStatics::GetActorOfClass(GetWorld(), ABoutCentre::StaticClass());
-	boutCentreLocation = boutCentre->GetActorLocation();
 }
 
 // Called every frame
 void APlayerClass::Tick(float DeltaTime)
 {
+	/*
+	//the new location to move to
+	FVector newLocation = FVector(0.f, 0.f, 0.f);
+
+	//move the current angle based on movespeed
+	angle += moveSpeed;
+
+	//BOMBOCLAT CIRCLE
+	if (angle > 360.f)
+	{
+		angle = 1.f;
+	}
+	else if (angle <= 0.f)
+	{
+		angle = 360.f;
+	}
+
+	//rotate around the radius 
+	FVector rotateValue = rotateRadius.RotateAngleAxis(angle, FVector(0.f, 0.f, 1));
+
+	//update new location
+	newLocation.X += rotateValue.X;
+	newLocation.Y += rotateValue.Y;
+	newLocation.Z += rotateValue.Z;
+
+	//set new actor location
+	SetActorLocation(newLocation);
+
+	*/
 	Super::Tick(DeltaTime);
-
-	FRotator LookAtRotation = (GetActorLocation() - boutCentreLocation);
-
-	//SetActorRotation();
 }
 
 //Move left and right around a point
 void APlayerClass::Move(const FInputActionValue& Value)
 {
 	//the new location to move to, dont move on Z axis, just horizontally
+	FVector boutCentreLocation = boutCentre->GetActorLocation();
 	FVector newLocation = FVector(boutCentreLocation.X, boutCentreLocation.Y, GetActorLocation().Z);
 
-	//move the current angle based on movespeed, left and right
 	FVector2D inputVector = Value.Get<FVector2D>();
+
+	//move the current angle based on movespeed, left and right
 	if(inputVector.X > 0.f)
 	{
 		movementAngle += moveSpeed;
