@@ -29,6 +29,10 @@ APlayerClass::APlayerClass()
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerClass::StaticClass(), players);
 	if (players.Num() == 1) playerID = 0;
 	else playerID = 1;
+
+	if (playerID == 1) {
+		movementAngle = 180;
+	}
 }
 
 // Called when the game starts or when spawned
