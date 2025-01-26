@@ -8,7 +8,6 @@
 #include "BoutCentre.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
-#include "Particles/ParticleSystemComponent.h"
 #include "PlayerClass.generated.h"
 
 UCLASS()
@@ -45,7 +44,6 @@ public:
 
 	//Movement Functions
 	void Move(const FInputActionValue& Value);
-	void StopMove(const FInputActionValue& Value);
 
 	//----------Movement Variables ----------
 	//the current angle that the player is at, 0 to 360, changing default value alters the starting position
@@ -102,10 +100,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float rightArmRadius = 100.f;
 
-	// VFX
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UParticleSystemComponent* popVfx;
-	bool popped = false;
 
 	// Input
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -134,4 +128,5 @@ public:
 
 	bool dying = false;
 	float deathTimeElapsed = 0.f;
+	bool awardedPoint = false;
 };

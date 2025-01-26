@@ -14,12 +14,10 @@ APlayerClass::APlayerClass()
 	rightArm = CreateDefaultSubobject<USceneComponent>("RightArm");
 	leftArmMarker = CreateDefaultSubobject<UStaticMeshComponent>("LeftArmMarker");
 	rightArmMarker = CreateDefaultSubobject<UStaticMeshComponent>("RightArmMarker");
-	popVfx = CreateDefaultSubobject<UParticleSystemComponent>("PoppingVFX");
 	leftArm->SetupAttachment(RootComponent);
 	rightArm->SetupAttachment(RootComponent);
 	leftArmMarker->SetupAttachment(RootComponent);
 	rightArmMarker->SetupAttachment(RootComponent);
-	popVfx->SetupAttachment(RootComponent);
 
 
 	//Init movement vars
@@ -73,12 +71,9 @@ void APlayerClass::BeginPlay()
 	if (IsValid(boutCentre)) boutCentreLocation = boutCentre->GetActorLocation();
 	else boutCentreLocation = FVector(0, 0, 0);
 
-	// Init input
+
 	leftAxisVector = FVector2D(0, 0);
 	rightAxisVector = FVector2D(0, 0);
-
-	// Init VFX
-	popVfx->SetActive(false);
 }
 
 // Called every frame
@@ -128,17 +123,15 @@ void APlayerClass::Tick(float DeltaTime)
 			Cast<UMyGameJimstance>(GetGameInstance())->CheckForWin();
 			GetMesh()->SetVisibility(true);
 			GetMesh()->SetRelativeScale3D(FVector(2.75f));
-			popVfx->SetActive(false);
 			return;
 		}
 		else if (deathTimeElapsed >= 0.15f) {
 			GetMesh()->SetVisibility(false);
-			if (!popped && !popVfx->IsActive()) {
-				popped = true;
-				popVfx->SetActive(true);
-				popVfx->Activate(true);
-			}
 			return;
+		}
+		if (!awardedPoint) {
+			awardedPoint = true;
+			Cast<UMyGameJimstance>(GetGameInstance())->AwardPoint(1 - playerID);
 		}
 		float scaleOffset = 2.75f + (deathTimeElapsed * 5.f);
 		GetMesh()->SetRelativeScale3D(FVector(scaleOffset, scaleOffset, 2.75f));
@@ -153,16 +146,20 @@ void APlayerClass::Move(const FInputActionValue& Value)
 
 	//move the current angle based on movespeed, left and right
 	FVector2D inputVector = Value.Get<FVector2D>();
-	if(inputVector.X > 0.f)				//Left
+	if(inputVector.X > 0.f)
 	{
 		movementAngle += moveSpeed;
 		isMovingLeft = true;
 		isMovingRight = false;
 	}
-	else if (inputVector.X < 0.f) {		//Right
+	else if (inputVector.X < 0.f) {
 		movementAngle -= moveSpeed;
 		isMovingLeft = false;
 		isMovingRight = true;
+	}
+	else {
+		isMovingLeft = false;
+		isMovingRight = false;
 	}
 	
 	//BOMBOCLAT CIRCLE
@@ -199,13 +196,6 @@ void APlayerClass::Move(const FInputActionValue& Value)
 	
 }
 
-//if there is no input left or right movement wise
-void APlayerClass::StopMove(const FInputActionValue& Value)
-{
-	isMovingLeft = false;
-	isMovingRight = false;
-}
-
 // Called to bind functionality to input
 void APlayerClass::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -216,7 +206,6 @@ void APlayerClass::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponenet->BindAction(rightArmRotateIA, ETriggerEvent::Triggered, this, &APlayerClass::RotateRightArm);
 		EnhancedInputComponenet->BindAction(leftArmRotateIA, ETriggerEvent::Triggered, this, &APlayerClass::RotateLeftArm);
 		EnhancedInputComponenet->BindAction(movementIA, ETriggerEvent::Triggered, this, &APlayerClass::Move);
-		EnhancedInputComponenet->BindAction(movementIA, ETriggerEvent::None, this, &APlayerClass::StopMove);
 		EnhancedInputComponenet->BindAction(leftArmRaiseIA, ETriggerEvent::Triggered, this, &APlayerClass::RaiseLeftArm);
 		EnhancedInputComponenet->BindAction(rightArmRaiseIA, ETriggerEvent::Triggered, this, &APlayerClass::RaiseRightArm);
 
@@ -247,11 +236,6 @@ void APlayerClass::RaiseRightArm(const FInputActionValue& Value)
 
 void APlayerClass::Die()
 {
-	if (!dying) {
-		if (!Cast<APlayerClass>(UGameplayStatics::GetPlayerControllerFromID(this, 1 - playerID)->GetPawn())->dying) {
-			Cast<UMyGameJimstance>(GetGameInstance())->AwardPoint(1 - playerID);
-		}
-	}
 	dying = true;
 }
 

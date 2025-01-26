@@ -9,9 +9,7 @@ UMyGameJimstance::UMyGameJimstance() {
 
 void UMyGameJimstance::ResetGame() {
 	ResetScores();
-	if (UFunction* resetLevelFunction = FindFunction(TEXT("ResetLevel"))) {
-		ProcessEvent(resetLevelFunction, nullptr);
-	}
+	UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), victoryLevel);
 }
 
 void UMyGameJimstance::ResetScores() {
@@ -25,15 +23,15 @@ void UMyGameJimstance::AwardPoint(int playerID) {
 void UMyGameJimstance::CheckForWin() {
 	if (scores[0] >= scoreToWin && (!requireTwoPointLeadForWin || scores[0] - 1 > scores[1])) {
 		// do shit
+		lastWinner = 0;
 		ResetGame();
 	}
 	else if (scores[1] >= scoreToWin && (!requireTwoPointLeadForWin || scores[1] - 1 > scores[0])) {
 		// do other shit
+		lastWinner = 1;
 		ResetGame();
 	}
 	else {
-		if (UFunction* resetLevelFunction = FindFunction(TEXT("ResetLevel"))) {
-			ProcessEvent(resetLevelFunction, nullptr);
-		}
+		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), gameLevel);
 	}
 }
