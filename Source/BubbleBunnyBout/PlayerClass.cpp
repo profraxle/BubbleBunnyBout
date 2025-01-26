@@ -14,10 +14,12 @@ APlayerClass::APlayerClass()
 	rightArm = CreateDefaultSubobject<USceneComponent>("RightArm");
 	leftArmMarker = CreateDefaultSubobject<UStaticMeshComponent>("LeftArmMarker");
 	rightArmMarker = CreateDefaultSubobject<UStaticMeshComponent>("RightArmMarker");
+	popVfx = CreateDefaultSubobject<UParticleSystemComponent>("PoppingVFX");
 	leftArm->SetupAttachment(RootComponent);
 	rightArm->SetupAttachment(RootComponent);
 	leftArmMarker->SetupAttachment(RootComponent);
 	rightArmMarker->SetupAttachment(RootComponent);
+	popVfx->SetupAttachment(RootComponent);
 
 
 	//Init movement vars
@@ -74,8 +76,6 @@ void APlayerClass::BeginPlay()
 		//set new actor location
 		SetActorLocation(newLocation);
 	}
-
-	
 }
 
 // Called every frame
@@ -125,10 +125,16 @@ void APlayerClass::Tick(float DeltaTime)
 			Cast<UMyGameJimstance>(GetGameInstance())->CheckForWin();
 			GetMesh()->SetVisibility(true);
 			GetMesh()->SetRelativeScale3D(FVector(2.75f));
+			popVfx->SetActive(false);
 			return;
 		}
 		else if (deathTimeElapsed >= 0.15f) {
 			GetMesh()->SetVisibility(false);
+			if (!popped && !popVfx->IsActive()) {
+				popped = true;
+				popVfx->SetActive(true);
+				popVfx->Activate(true);
+			}
 			return;
 		}
 		float scaleOffset = 2.75f + (deathTimeElapsed * 5.f);
