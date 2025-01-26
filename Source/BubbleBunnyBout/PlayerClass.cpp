@@ -2,6 +2,7 @@
 
 #include "PlayerClass.h"
 #include "EnhancedInputComponent.h"
+#include "MyGameJimstance.h"
 
 // Sets default values
 APlayerClass::APlayerClass()
@@ -37,6 +38,28 @@ void APlayerClass::BeginPlay()
 		{
 			Subsystem->AddMappingContext(inputMappingContext, 0);
 		}
+
+		ULocalPlayer* LP = Cast<ULocalPlayer>(PlayerController->Player);
+
+		playerID = LP->GetControllerId();
+
+
+		if (playerID == 1) {
+			movementAngle = 180;
+		}
+
+		//the new location to move to, dont move on Z axis, just horizontally
+		FVector newLocation = FVector(boutCentreLocation.X, boutCentreLocation.Y, GetActorLocation().Z);
+
+		//rotate around the radius 
+		FVector rotateValue = moveRotateRadius.RotateAngleAxis(movementAngle, FVector(0.f, 0.f, 1));
+
+		//update new location
+		newLocation.X += rotateValue.X;
+		newLocation.Y += rotateValue.Y;
+
+		//set new actor location
+		SetActorLocation(newLocation);
 	}
 
 	//Get the centre of the bout
@@ -85,6 +108,25 @@ void APlayerClass::Tick(float DeltaTime)
 	rightArmExtensionDistance = 0.f;
 
 	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), FVector(boutCentreLocation.X, boutCentreLocation.Y, GetActorLocation().Z)));
+
+	// Death
+	if (dying) {
+		deathTimeElapsed += DeltaTime;
+		if (deathTimeElapsed >= 1.f) {
+			deathTimeElapsed = 0.f;
+			dying = false;
+			Cast<UMyGameJimstance>(GetGameInstance())->AwardPoint(1 - playerID);
+			GetMesh()->SetVisibility(true);
+			GetMesh()->SetRelativeScale3D(FVector(2.75f));
+			return;
+		}
+		else if (deathTimeElapsed >= 0.15f) {
+			GetMesh()->SetVisibility(false);
+			return;
+		}
+		float scaleOffset = 2.75f + (deathTimeElapsed * 5.f);
+		GetMesh()->SetRelativeScale3D(FVector(scaleOffset, scaleOffset, 2.75f));
+	}
 }
 
 //Move left and right around a point
@@ -104,13 +146,25 @@ void APlayerClass::Move(const FInputActionValue& Value)
 	}
 	
 	//BOMBOCLAT CIRCLE
-	if (movementAngle > 360.f)
-	{
-		movementAngle = 1.f;
+	if (playerID == 1) {
+		if (movementAngle > 270 - moveAngleConstraint)
+		{
+			movementAngle = 270 - moveAngleConstraint;
+		}
+		else if (movementAngle < 90 + moveAngleConstraint)
+		{
+			movementAngle = 90 + moveAngleConstraint;
+		}
 	}
-	else if (movementAngle <= 0.f)
-	{
-		movementAngle = 360.f;
+	else {
+		if (movementAngle > 90 - moveAngleConstraint)
+		{
+			movementAngle = 90 - moveAngleConstraint;
+		}
+		else if (movementAngle < -90 + moveAngleConstraint)
+		{
+			movementAngle = -90 + moveAngleConstraint;
+		}
 	}
 
 	//rotate around the radius 
@@ -161,6 +215,11 @@ void APlayerClass::RaiseLeftArm(const FInputActionValue& Value)
 void APlayerClass::RaiseRightArm(const FInputActionValue& Value)
 {
 	rightArmExtensionDistance = Value.Get<float>() * rightArmMaxExtensionDistance;
+}
+
+void APlayerClass::Die()
+{
+	dying = true;
 }
 
 
