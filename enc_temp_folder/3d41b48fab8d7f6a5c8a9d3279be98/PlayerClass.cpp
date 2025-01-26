@@ -146,16 +146,20 @@ void APlayerClass::Move(const FInputActionValue& Value)
 
 	//move the current angle based on movespeed, left and right
 	FVector2D inputVector = Value.Get<FVector2D>();
-	if(inputVector.X > 0.f)				//Left
+	if(inputVector.X > 0.f)
 	{
 		movementAngle += moveSpeed;
 		isMovingLeft = true;
 		isMovingRight = false;
 	}
-	else if (inputVector.X < 0.f) {		//Right
+	else if (inputVector.X < 0.f) {
 		movementAngle -= moveSpeed;
 		isMovingLeft = false;
 		isMovingRight = true;
+	}
+	else {
+		isMovingLeft = false;
+		isMovingRight = false;
 	}
 	
 	//BOMBOCLAT CIRCLE
@@ -192,13 +196,6 @@ void APlayerClass::Move(const FInputActionValue& Value)
 	
 }
 
-//if there is no input left or right movement wise
-void APlayerClass::StopMove(const FInputActionValue& Value)
-{
-	isMovingLeft = false;
-	isMovingRight = false;
-}
-
 // Called to bind functionality to input
 void APlayerClass::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -209,7 +206,6 @@ void APlayerClass::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponenet->BindAction(rightArmRotateIA, ETriggerEvent::Triggered, this, &APlayerClass::RotateRightArm);
 		EnhancedInputComponenet->BindAction(leftArmRotateIA, ETriggerEvent::Triggered, this, &APlayerClass::RotateLeftArm);
 		EnhancedInputComponenet->BindAction(movementIA, ETriggerEvent::Triggered, this, &APlayerClass::Move);
-		EnhancedInputComponenet->BindAction(movementIA, ETriggerEvent::None, this, &APlayerClass::StopMove);
 		EnhancedInputComponenet->BindAction(leftArmRaiseIA, ETriggerEvent::Triggered, this, &APlayerClass::RaiseLeftArm);
 		EnhancedInputComponenet->BindAction(rightArmRaiseIA, ETriggerEvent::Triggered, this, &APlayerClass::RaiseRightArm);
 
