@@ -2,6 +2,7 @@
 
 #include "PlayerClass.h"
 #include "EnhancedInputComponent.h"
+#include "MyGameJimstance.h"
 
 // Sets default values
 APlayerClass::APlayerClass()
@@ -214,6 +215,11 @@ void APlayerClass::RaiseLeftArm(const FInputActionValue& Value)
 void APlayerClass::RaiseRightArm(const FInputActionValue& Value)
 {
 	rightArmExtensionDistance = Value.Get<float>() * rightArmMaxExtensionDistance;
+}
+
+void APlayerClass::Die()
+{
+	dying = true;
 }
 
 
