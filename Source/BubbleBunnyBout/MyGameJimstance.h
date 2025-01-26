@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "Blueprint/UserWidget.h"
 #include "MyGameJimstance.generated.h"
 
 
@@ -38,6 +39,9 @@ public:
 	void AwardPoint(int playerID);
 	UFUNCTION(BlueprintCallable)
 	void CheckForWin();
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayTransition();
 
 protected:
+	UUserWidget* transitionWidget;
 };

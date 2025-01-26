@@ -32,6 +32,7 @@ void UMyGameJimstance::CheckForWin() {
 		ResetGame();
 	}
 	else {
-		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), gameLevel);
+		PlayTransition();
+		//UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), gameLevel);
 	}
 }

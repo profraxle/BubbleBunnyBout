@@ -75,6 +75,8 @@ void APlayerClass::BeginPlay()
 
 		//set new actor location
 		SetActorLocation(newLocation);
+
+		popVfx->SetActive(false);
 	}
 }
 
