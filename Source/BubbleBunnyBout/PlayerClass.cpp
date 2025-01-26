@@ -54,6 +54,15 @@ void APlayerClass::BeginPlay()
 			movementAngle = 180;
 		}
 
+		//Get the centre of the bout
+		boutCentre = UGameplayStatics::GetActorOfClass(GetWorld(), ABoutCentre::StaticClass());
+		if (IsValid(boutCentre)) boutCentreLocation = boutCentre->GetActorLocation();
+		else boutCentreLocation = FVector(0, 0, 0);
+
+
+		leftAxisVector = FVector2D(0, 0);
+		rightAxisVector = FVector2D(0, 0);
+
 		//the new location to move to, dont move on Z axis, just horizontally
 		FVector newLocation = FVector(boutCentreLocation.X, boutCentreLocation.Y, GetActorLocation().Z);
 
@@ -67,18 +76,6 @@ void APlayerClass::BeginPlay()
 		//set new actor location
 		SetActorLocation(newLocation);
 	}
-
-	//Get the centre of the bout
-	boutCentre = UGameplayStatics::GetActorOfClass(GetWorld(), ABoutCentre::StaticClass());
-	if (IsValid(boutCentre)) boutCentreLocation = boutCentre->GetActorLocation();
-	else boutCentreLocation = FVector(0, 0, 0);
-
-	// Init input
-	leftAxisVector = FVector2D(0, 0);
-	rightAxisVector = FVector2D(0, 0);
-
-	// Init VFX
-	popVfx->SetActive(false);
 }
 
 // Called every frame
@@ -96,6 +93,7 @@ void APlayerClass::Tick(float DeltaTime)
 	leftDirectionPoint += leftDirectionVector * leftArmExtensionDistance;
 
 	leftArmMarker->SetWorldLocation(leftDirectionPoint);
+	//leftArmMarker->SetWorldRotation(leftDirectionVector.ToOrientationQuat());
 	leftArm->SetWorldRotation(leftDirectionVector.ToOrientationQuat());
 
 	leftAxisVector = FVector2D(0, 0);
@@ -108,9 +106,11 @@ void APlayerClass::Tick(float DeltaTime)
 
 	FVector rightDirectionVector = rightDirectionPoint - rightArm->GetComponentLocation();
 	rightDirectionVector.Normalize();
+	rightDirectionVector.Z = 0;
 	rightDirectionPoint += rightDirectionVector * rightArmExtensionDistance;
 
 	rightArmMarker->SetWorldLocation(rightDirectionPoint);
+	rightArmMarker->SetWorldRotation(rightDirectionVector.ToOrientationQuat());
 	rightArm->SetWorldRotation(rightDirectionVector.ToOrientationQuat());
 
 	rightAxisVector = FVector2D(0, 0);
