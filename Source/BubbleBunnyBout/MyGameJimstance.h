@@ -30,7 +30,8 @@ public:
 	void ResetScores();
 	UFUNCTION(BlueprintCallable)
 	void AwardPoint(int playerID);
+	UFUNCTION(BlueprintCallable)
+	void CheckForWin();
 
 protected:
-	void CheckForWin();
 };

@@ -120,7 +120,7 @@ void APlayerClass::Tick(float DeltaTime)
 		if (deathTimeElapsed >= 1.f) {
 			deathTimeElapsed = 0.f;
 			dying = false;
-			Cast<UMyGameJimstance>(GetGameInstance())->AwardPoint(1 - playerID);
+			Cast<UMyGameJimstance>(GetGameInstance())->CheckForWin();
 			GetMesh()->SetVisibility(true);
 			GetMesh()->SetRelativeScale3D(FVector(2.75f));
 			return;
@@ -128,6 +128,10 @@ void APlayerClass::Tick(float DeltaTime)
 		else if (deathTimeElapsed >= 0.15f) {
 			GetMesh()->SetVisibility(false);
 			return;
+		}
+		if (!awardedPoint) {
+			awardedPoint = true;
+			Cast<UMyGameJimstance>(GetGameInstance())->AwardPoint(1 - playerID);
 		}
 		float scaleOffset = 2.75f + (deathTimeElapsed * 5.f);
 		GetMesh()->SetRelativeScale3D(FVector(scaleOffset, scaleOffset, 2.75f));
