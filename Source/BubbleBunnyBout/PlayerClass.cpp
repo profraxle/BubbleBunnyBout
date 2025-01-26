@@ -24,6 +24,10 @@ APlayerClass::APlayerClass()
 	movementAngle = 0;
 	moveSpeed = 1;
 	moveRotateRadius = FVector(200.f, 0.f, 0.f);
+
+	//Init animation vars
+	isMovingLeft = false;
+	isMovingRight = false;
 }
 
 // Called when the game starts or when spawned
@@ -141,9 +145,17 @@ void APlayerClass::Move(const FInputActionValue& Value)
 	if(inputVector.X > 0.f)
 	{
 		movementAngle += moveSpeed;
+		isMovingLeft = true;
+		isMovingRight = false;
 	}
 	else if (inputVector.X < 0.f) {
 		movementAngle -= moveSpeed;
+		isMovingLeft = false;
+		isMovingRight = true;
+	}
+	else {
+		isMovingLeft = false;
+		isMovingRight = false;
 	}
 	
 	//BOMBOCLAT CIRCLE

@@ -59,6 +59,12 @@ public:
 	AActor* boutCentre;
 	FVector boutCentreLocation;
 
+	//For animations
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool isMovingLeft;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool isMovingRight;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AActor* enemy;
 
