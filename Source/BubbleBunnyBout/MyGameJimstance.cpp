@@ -9,9 +9,9 @@ UMyGameJimstance::UMyGameJimstance() {
 
 void UMyGameJimstance::ResetGame() {
 	ResetScores();
-	/*if (UFunction* resetLevelFunction = FindFunction(TEXT("ResetLevel"))) {
+	if (UFunction* resetLevelFunction = FindFunction(TEXT("ResetLevel"))) {
 		ProcessEvent(resetLevelFunction, nullptr);
-	}*/
+	}
 }
 
 void UMyGameJimstance::ResetScores() {
@@ -22,6 +22,10 @@ void UMyGameJimstance::AwardPoint(int playerID) {
 	scores[playerID]++;
 	GEngine->AddOnScreenDebugMessage(0, 1, FColor::Red, FString::Printf(TEXT("Scores are: %i, %i"), scores[0], scores[1]));
 	CheckForWin();
+	if (UFunction* resetLevelFunction = FindFunction(TEXT("ResetLevel"))) {
+		ProcessEvent(resetLevelFunction, nullptr);
+	}
+	
 }
 
 void UMyGameJimstance::CheckForWin() {
