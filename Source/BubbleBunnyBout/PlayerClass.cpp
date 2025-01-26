@@ -129,10 +129,6 @@ void APlayerClass::Tick(float DeltaTime)
 			GetMesh()->SetVisibility(false);
 			return;
 		}
-		if (!awardedPoint) {
-			awardedPoint = true;
-			Cast<UMyGameJimstance>(GetGameInstance())->AwardPoint(1 - playerID);
-		}
 		float scaleOffset = 2.75f + (deathTimeElapsed * 5.f);
 		GetMesh()->SetRelativeScale3D(FVector(scaleOffset, scaleOffset, 2.75f));
 	}
@@ -236,6 +232,11 @@ void APlayerClass::RaiseRightArm(const FInputActionValue& Value)
 
 void APlayerClass::Die()
 {
+	if (!dying) {
+		if (!Cast<APlayerClass>(UGameplayStatics::GetPlayerControllerFromID(this, 1 - playerID)->GetPawn())->dying) {
+			Cast<UMyGameJimstance>(GetGameInstance())->AwardPoint(1 - playerID);
+		}
+	}
 	dying = true;
 }
 

@@ -128,5 +128,4 @@ public:
 
 	bool dying = false;
 	float deathTimeElapsed = 0.f;
-	bool awardedPoint = false;
 };
