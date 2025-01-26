@@ -107,8 +107,9 @@ void APlayerClass::Tick(float DeltaTime)
 	rightAxisVector = FVector2D(0, 0);
 	rightArmExtensionDistance = 0.f;
 
-	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), FVector(boutCentreLocation.X, boutCentreLocation.Y, GetActorLocation().Z)));
-
+	if (enemy) {
+		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), FVector(enemy->GetActorLocation().X, enemy->GetActorLocation().Y, GetActorLocation().Z)));
+	}
 	// Death
 	if (dying) {
 		deathTimeElapsed += DeltaTime;

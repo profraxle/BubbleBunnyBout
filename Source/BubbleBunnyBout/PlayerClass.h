@@ -59,6 +59,9 @@ public:
 	AActor* boutCentre;
 	FVector boutCentreLocation;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	AActor* enemy;
+
 	// Components
 	// Arms
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -114,7 +117,9 @@ public:
 	float moveAngleConstraint = 40;
 
 	// Death
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int playerID;
+
 	bool dying = false;
 	float deathTimeElapsed = 0.f;
 };
