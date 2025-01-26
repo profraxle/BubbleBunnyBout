@@ -44,7 +44,6 @@ public:
 
 	//Movement Functions
 	void Move(const FInputActionValue& Value);
-	void StopMove(const FInputActionValue& Value);
 
 	//----------Movement Variables ----------
 	//the current angle that the player is at, 0 to 360, changing default value alters the starting position
