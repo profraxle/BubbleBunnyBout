@@ -52,6 +52,15 @@ void APlayerClass::BeginPlay()
 			movementAngle = 180;
 		}
 
+		//Get the centre of the bout
+		boutCentre = UGameplayStatics::GetActorOfClass(GetWorld(), ABoutCentre::StaticClass());
+		if (IsValid(boutCentre)) boutCentreLocation = boutCentre->GetActorLocation();
+		else boutCentreLocation = FVector(0, 0, 0);
+
+
+		leftAxisVector = FVector2D(0, 0);
+		rightAxisVector = FVector2D(0, 0);
+
 		//the new location to move to, dont move on Z axis, just horizontally
 		FVector newLocation = FVector(boutCentreLocation.X, boutCentreLocation.Y, GetActorLocation().Z);
 
@@ -66,14 +75,7 @@ void APlayerClass::BeginPlay()
 		SetActorLocation(newLocation);
 	}
 
-	//Get the centre of the bout
-	boutCentre = UGameplayStatics::GetActorOfClass(GetWorld(), ABoutCentre::StaticClass());
-	if (IsValid(boutCentre)) boutCentreLocation = boutCentre->GetActorLocation();
-	else boutCentreLocation = FVector(0, 0, 0);
-
-
-	leftAxisVector = FVector2D(0, 0);
-	rightAxisVector = FVector2D(0, 0);
+	
 }
 
 // Called every frame
