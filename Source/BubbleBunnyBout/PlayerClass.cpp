@@ -96,6 +96,7 @@ void APlayerClass::Tick(float DeltaTime)
 	leftDirectionPoint += leftDirectionVector * leftArmExtensionDistance;
 
 	leftArmMarker->SetWorldLocation(leftDirectionPoint);
+	//leftArmMarker->SetWorldRotation(leftDirectionVector.ToOrientationQuat());
 	leftArm->SetWorldRotation(leftDirectionVector.ToOrientationQuat());
 
 	leftAxisVector = FVector2D(0, 0);
@@ -108,9 +109,11 @@ void APlayerClass::Tick(float DeltaTime)
 
 	FVector rightDirectionVector = rightDirectionPoint - rightArm->GetComponentLocation();
 	rightDirectionVector.Normalize();
+	rightDirectionVector.Z = 0;
 	rightDirectionPoint += rightDirectionVector * rightArmExtensionDistance;
 
 	rightArmMarker->SetWorldLocation(rightDirectionPoint);
+	rightArmMarker->SetWorldRotation(rightDirectionVector.ToOrientationQuat());
 	rightArm->SetWorldRotation(rightDirectionVector.ToOrientationQuat());
 
 	rightAxisVector = FVector2D(0, 0);
