@@ -8,6 +8,7 @@
 #include "BoutCentre.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "PlayerClass.generated.h"
 
 UCLASS()
@@ -100,6 +101,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float rightArmRadius = 100.f;
 
+	// VFX
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UParticleSystemComponent* popVfx;
+	bool popped = false;
 
 	// Input
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
