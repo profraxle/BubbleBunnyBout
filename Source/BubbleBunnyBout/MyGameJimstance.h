@@ -23,6 +23,10 @@ public:
 	int scoreToWin;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool requireTwoPointLeadForWin;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSoftObjectPtr<UWorld> gameLevel;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSoftObjectPtr<UWorld> victoryLevel;
 
 	UFUNCTION(BlueprintCallable)
 	void ResetGame();

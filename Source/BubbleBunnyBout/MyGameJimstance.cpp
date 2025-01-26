@@ -9,9 +9,7 @@ UMyGameJimstance::UMyGameJimstance() {
 
 void UMyGameJimstance::ResetGame() {
 	ResetScores();
-	if (UFunction* resetLevelFunction = FindFunction(TEXT("ResetLevel"))) {
-		ProcessEvent(resetLevelFunction, nullptr);
-	}
+	UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), victoryLevel);
 }
 
 void UMyGameJimstance::ResetScores() {
@@ -32,8 +30,6 @@ void UMyGameJimstance::CheckForWin() {
 		ResetGame();
 	}
 	else {
-		if (UFunction* resetLevelFunction = FindFunction(TEXT("ResetLevel"))) {
-			ProcessEvent(resetLevelFunction, nullptr);
-		}
+		UGameplayStatics::OpenLevelBySoftObjectPtr(GetWorld(), gameLevel);
 	}
 }
